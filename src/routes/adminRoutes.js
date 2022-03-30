@@ -11,7 +11,7 @@ const {
 } = require("../controllers");
 
 // Create announce
-router.route("/create/announce").post(Announces.createAnnounce);
+router.route("/create/announce").post(Admins.createAnnounce);
 
 // Get all announces
 router.route("/").get(Announces.getAnnounces);
@@ -24,27 +24,31 @@ router
   .put(Announces.updateAnnounce);
 
 // Get all clients
-// router.route("/clients").get(Clients.getClients);
+router.route("/clients").get(Clients.getClients);
 
 // Get all delivery guys
-// router.route("/client/Id").get(Clients.getClient).delete(Clients.deleteClient);
+router.route("/client/Id").get(Clients.getClient).delete(Clients.deleteClient);
 
 // Get all commands
-// router.route("/commands").get(Commands.getCommands);
+router.route("/commands").get(Commands.getCommands);
 
 // Get one command
-// router.route("/command/Id").get(Commands.getCommand);
+router
+  .route("/command/Id")
+  .get(Commands.getCommand)
+  .put(Commands.updateCommand)
+  .delete(Commands.deleteCommand);
 
 // Accept delivery guy
-// router.route("/acceptDeliveryguy/Id").post(Admins.acceptDeliveryguy)
+router.route("/acceptDeliveryguy/Id").post(Admins.acceptDeliveryguy);
 
 // Refuse delivery guy
-// router.route("/refuseDeliveryguy/Id").post(Admins.refuseDeliveryguy)
+router.route("/refuseDeliveryguy/Id").post(Admins.refuseDeliveryguy);
 
 // Get accepted delivery guy
-// router.route("/acceptedDeliveryguy").get(DeliveryGuys.getAccepted);
+router.route("/acceptedDeliveryguy").get(DeliveryGuys.getAccepted);
 
 // Get refused delivery guy
-// router.route("/refusedDeliveryguy").get(DeliveryGuys.getRefused);
+router.route("/refusedDeliveryguy").get(DeliveryGuys.getRefused);
 
 module.exports = router;

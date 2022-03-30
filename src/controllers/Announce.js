@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const { Announces } = require("../models");
 
-const createAnnounce = (req, res) => {
-  console.log("Create announce");
-};
-
 const getAnnounces = (req, res) => {
   console.log("Get all announces");
 };
@@ -22,7 +18,6 @@ const updateAnnounce = (req, res) => {
 };
 
 module.exports = {
-  createAnnounce,
   getAnnounces,
   getAnnounce,
   deleteAnnounce,

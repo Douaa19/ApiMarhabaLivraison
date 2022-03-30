@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/auth", authentificationRoutes);
-app.use("/announces", adminRoutes);
+app.use("/admin", adminRoutes);
 
 app.listen(PORT, () =>
   console.log(`server is running at : http://localhost:${PORT}`)
