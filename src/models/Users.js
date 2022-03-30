@@ -4,7 +4,7 @@ const Role = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    enum: ["admin", "client", "server"],
+    enum: ["admin", "client", "deliveryguy"],
   },
   status: {
     type: String,
