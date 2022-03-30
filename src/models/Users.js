@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const Role = new mongoose.Schema({
   name: {
@@ -35,6 +36,16 @@ const Users = new mongoose.Schema({
     maxlength: [20, "the password must be less than 20 characters"],
   },
   role: Role,
+});
+
+Users.pre("save", function (next) {
+  const user = this;
+  if (!user.isModified("password")) return next();
+
+  bcrypt.hash(user.password, 10).then((hashedPassword) => {
+    user.password = hashedPassword;
+    next();
+  });
 });
 
 const User = mongoose.model("User", Users);
