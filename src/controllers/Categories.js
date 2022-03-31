@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const { Category } = require("../models");
 
 // Get all categories
-const getCategories = (req, res) => {
+const getCategories = async (req, res) => {
   try {
-    const categories = Category.find();
+    const categories = await Category.find();
     if (!categories)
       res.status(400).json({ message: "There are no categories!" });
     res.status(200).json(categories);
@@ -14,9 +14,31 @@ const getCategories = (req, res) => {
 };
 
 // Get all categories
-const createCategory = (req, res) => {};
+const createCategory = async (req, res) => {
+  console.log(req.body.name);
+  try {
+    const newCategory = await Category.create({ name: req.body.name });
+    if (newCategory)
+      res.status(200).json({ message: "Category created successfully !" });
+  } catch (error) {
+    res.json({ error });
+  }
+};
+
+// Delete category
+const deleteCategory = async (req, res) => {
+  console.log(req.body.name);
+  try {
+    const newCategory = await Category.findByIdAndDelete({ name: req.body.name });
+    if (newCategory)
+      res.status(200).json({ message: "Category created successfully !" });
+  } catch (error) {
+    res.json({ error });
+  }
+};
 
 module.exports = {
   getCategories,
   createCategory,
+  deleteCategory
 };

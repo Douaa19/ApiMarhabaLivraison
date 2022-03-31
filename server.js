@@ -35,12 +35,12 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use(authorization);
+// app.use(authorization);
 
 // Routes
 app.use("/auth", authentificationRoutes);
 app.use("/admin", adminRoutes);
-app.use("/category", categoryRoutes)
+app.use("/category", categoryRoutes);
 
 app.listen(PORT, () =>
   console.log(`server is running at : http://localhost:${PORT}`)
