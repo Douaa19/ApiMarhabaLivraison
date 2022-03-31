@@ -1,5 +1,3 @@
-// acceptDeliveryguy
-// refuseDeliveryguy
 const mongoose = require("mongoose");
 const { Users, Announce } = require("../models");
 
