@@ -57,7 +57,7 @@ const handleLogin = (req, res) => {
             { id, role, username },
             process.env.JWT_ACCESS_SECRET
           );
-          res.cookie("token", myToken, { httpOnly: true });
+          res.cookies("token", myToken, { httpOnly: true });
           res.json({ token: myToken });
         }
       });
