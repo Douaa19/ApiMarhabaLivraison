@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const morgan = require("morgan");
 const PORT = process.env.PORT || 8000;
 
 // require mongoose
@@ -20,6 +21,7 @@ const adminRoutes = require("./src/routes/adminRoutes");
 // app.use("/auth", authentificationRoutes);
 
 // using middlewares
+app.use(morgan("tiny"));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
