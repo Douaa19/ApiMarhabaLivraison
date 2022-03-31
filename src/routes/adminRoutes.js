@@ -15,11 +15,11 @@ const {
 
 // Create announce
 router
-  .route("/create/announce", authorizationRole())
-  .post(Admins.createAnnounce);
+  .route("/create/announce")
+  .post(Announces.createAnnounce);
 
 // Get all announces
-router.route("/").get(Announces.getAnnounces);
+router.route("/announces").get(Announces.getAnnounces);
 
 // Get, delete and update announce
 router

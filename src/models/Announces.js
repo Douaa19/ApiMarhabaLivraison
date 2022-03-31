@@ -5,16 +5,17 @@ const Announces = new mongoose.Schema({
     type: String,
     required: true,
   },
-  descriptio: {
+  description: {
     type: String,
     required: true,
   },
   price: {
     type: Number,
+    required: true,
   },
-  images: [{
-    type: String,
-}],
+  //   images: [{
+  //     type: String,
+  // }],
 });
 
 const Announce = mongoose.model("Announces", Announces);
