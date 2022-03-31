@@ -21,7 +21,7 @@ const adminRoutes = require("./src/routes/adminRoutes");
 // app.use("/auth", authentificationRoutes);
 
 // using middlewares
-app.use(morgan("tiny"));
+// app.use(morgan("tiny"));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());

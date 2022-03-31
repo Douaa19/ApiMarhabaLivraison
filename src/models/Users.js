@@ -48,6 +48,10 @@ Users.pre("save", function (next) {
   });
 });
 
+Users.methods.comparePasswords = function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
 const User = mongoose.model("User", Users);
 
 module.exports = User;
