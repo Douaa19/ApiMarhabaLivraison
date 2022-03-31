@@ -1,7 +1,9 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 const authorization = async (req, res, next) => {
-  const token = req.cookies.token ?? req.header("Authorization");
+  const token = req.header("auth-token");
+  console.log("Token : " + token);
 
   if (!token) {
     res.status(401).json({ error: "No token found!" });
@@ -9,7 +11,6 @@ const authorization = async (req, res, next) => {
     try {
       const user = await jwt.verify(token, process.env.JWT_ACCESS_SECRET);
       req.tokenData = { id: user.id, role: user.role, username: user.username };
-      console.table(req.tokenData);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -18,6 +19,7 @@ const authorization = async (req, res, next) => {
 
 const authorizationRole = (...roles) => {
   return (req, res, next) => {
+    console.log(req.tokenData);
     if (!roles.includes(req.tokenData.role.name)) {
       res.status(401).json({ error: "You are not authorized" });
     } else {

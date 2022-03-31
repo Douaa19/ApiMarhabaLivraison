@@ -46,21 +46,23 @@ const handleLogin = (req, res) => {
     } else if (!req.body.password) {
       res.json({ message: "password is not here!" });
     } else {
-      await user.comparePasswords(req.body.password).then((result) => {
-        if (!result) {
-          res.json({ message: "Password in incorrect! Please try again." });
-        } else {
-          const id = user._id;
-          const role = user.role;
-          const username = user.username;
-          const myToken = jwt.sign(
-            { id, role, username },
-            process.env.JWT_ACCESS_SECRET
-          );
-          res.cookies("token", myToken, { httpOnly: true });
-          res.json({ token: myToken });
-        }
-      });
+      await user
+        .comparePasswords(req.body.password)
+        .then((result) => {
+          if (!result) {
+            res.json({ message: "Password in incorrect! Please try again." });
+          } else {
+            const id = user._id;
+            const role = user.role;
+            const username = user.username;
+            const myToken = jwt.sign(
+              { id, role, username },
+              process.env.JWT_ACCESS_SECRET
+            );
+            res.json({ myToken });
+          }
+        })
+        .catch((err) => console.log({ err }));
     }
   })();
 };
