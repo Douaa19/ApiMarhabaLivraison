@@ -24,12 +24,17 @@ const getAnnounces = async (req, res) => {
   res.status(200).json(annons);
 };
 
-const getAnnounce = (req, res) => {
-  console.log("Get one announce");
+const getAnnounce = async (req, res) => {
+  
 };
 
-const deleteAnnounce = (req, res) => {
-  console.log("Delete announce");
+const deleteAnnounce = async (req, res) => {
+  try {
+    await Announces.findByIdAndDelete({ _id: req.body.Id });
+    res.status(200).json({ message: "One announce deleted successfully! " });
+  } catch (error) {
+    res.status(404).json(error.message);
+  }
 };
 
 const updateAnnounce = (req, res) => {

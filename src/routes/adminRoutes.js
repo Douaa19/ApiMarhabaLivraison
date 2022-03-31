@@ -23,7 +23,7 @@ router.route("/announces").get(Announces.getAnnounces);
 
 // Get, delete and update announce
 router
-  .route("/announce/Id")
+  .route("/announce")
   .get(Announces.getAnnounce)
   .delete(Announces.deleteAnnounce)
   .put(Announces.updateAnnounce);
