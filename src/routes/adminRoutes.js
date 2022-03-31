@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+// Require authorization users
+const { authorizationRole } = require("../middlewares/autorization");
+
 // Require controllers
 const {
   Admins,
@@ -11,7 +14,9 @@ const {
 } = require("../controllers");
 
 // Create announce
-router.route("/create/announce").post(Admins.createAnnounce);
+router
+  .route("/create/announce", authorizationRole())
+  .post(Admins.createAnnounce);
 
 // Get all announces
 router.route("/").get(Announces.getAnnounces);

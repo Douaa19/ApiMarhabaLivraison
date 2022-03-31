@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 8000;
 require("./src/config/mongoose");
 
 const cookieParser = require("cookie-parser");
+const { authorization } = require("./src/middlewares/autorization");
 
 // require Routes
 const authentificationRoutes = require("./src/routes/authentificationRoutes");
@@ -32,6 +33,8 @@ app.get("/", (req, res) => {
     message: "Welcome to Mahaba livraison!!",
   });
 });
+
+app.use(authorization)
 
 // Routes
 app.use("/auth", authentificationRoutes);
