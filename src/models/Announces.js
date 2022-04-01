@@ -5,16 +5,21 @@ const Announces = new mongoose.Schema({
     type: String,
     required: true,
   },
-  descriptio: {
+  description: {
     type: String,
     required: true,
   },
   price: {
     type: Number,
+    required: true,
   },
-  images: [{
-    type: String,
-}],
+  //   images: [{
+  //     type: String,
+  // }],
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+  },
 });
 
 const Announce = mongoose.model("Announces", Announces);

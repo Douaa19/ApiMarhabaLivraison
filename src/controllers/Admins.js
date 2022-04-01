@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const { Users, Announce } = require("../models");
 
-const createAnnounce = (req, res) => {
-  console.log("Create announce");
-};
-
 // Accept delivery guy
 const acceptDeliveryguy = (req, res) => {
   console.log("Accept delivery guy");
@@ -16,7 +12,6 @@ const refuseDeliveryguy = (req, res) => {
 };
 
 module.exports = {
-  createAnnounce,
   acceptDeliveryguy,
   refuseDeliveryguy,
 };
