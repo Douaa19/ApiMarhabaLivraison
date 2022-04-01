@@ -7,14 +7,14 @@ const createAnnounce = async (req, res) => {
       (result) => {
         if (result !== null) {
           Announces.create({
-              title: req.body.title,
-              description: req.body.description,
-              price: req.body.price,
-              category_id: result._id,
-            }).then((response) => {
-              res.json({ message: "New announce created!" });
-            });
-          } else {
+            title: req.body.title,
+            description: req.body.description,
+            price: req.body.price,
+            category_id: result._id,
+          }).then((response) => {
+            res.json({ message: "New announce created!" });
+          });
+        } else {
           res
             .status(400)
             .json({ message: "Category not found! You should create it" });
@@ -50,8 +50,30 @@ const deleteAnnounce = async (req, res) => {
   }
 };
 
-const updateAnnounce = (req, res) => {
-  console.log("Update announce");
+const updateAnnounce = async (req, res) => {
+  const Id = req.body.Id;
+  const data = {
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+    category: req.body.category,
+    cotegory_id: "",
+  };
+
+  try {
+    const category = await Category.findOne({ name: data.category });
+    if (!category) {
+      res.json({ message: "Category not found!" });
+    } else {
+      data.cotegory_id = category._id;
+      Announces.findByIdAndUpdate(Id, data, (err, response) => {
+        if (err) res.status(400).json(err);
+        res.status(200).json({ message: "Announce updated seccussefully!" });
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = {
