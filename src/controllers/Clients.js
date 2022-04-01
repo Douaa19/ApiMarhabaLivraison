@@ -20,13 +20,30 @@ const getClients = (req, res) => {
 };
 
 // Get one client
-const getClient = (req, res) => {
-  
+const getClient = async (req, res) => {
+  try {
+    const client = await User.findById({ _id: req.body.Id });
+    if (!client) {
+      res.status(404).json({ message: "Client not found!" });
+    } else {
+      if (client.role.name === "client") {
+        res.status(200).json(client);
+      }
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
 };
 
 // Delete one client
 const deleteClient = (req, res) => {
-  console.log("Delete one client");
+  try {
+    User.findByIdAndDelete({ _id: req.body.Id }).then((response) => {
+      res.json({ message: "Client delete seccussfully!" });
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
 };
 
 module.exports = {

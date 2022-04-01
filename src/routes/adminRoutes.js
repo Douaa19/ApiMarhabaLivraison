@@ -30,7 +30,7 @@ router
 router.route("/clients").get(Clients.getClients);
 
 // Get all delivery guys
-router.route("/client/Id").get(Clients.getClient).delete(Clients.deleteClient);
+router.route("/client").get(Clients.getClient).delete(Clients.deleteClient);
 
 // Get all commands
 router.route("/commands").get(Commands.getCommands);
