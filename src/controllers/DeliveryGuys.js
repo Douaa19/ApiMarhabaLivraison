@@ -1,17 +1,26 @@
 const mongoose = require("mongoose");
-const { Users } = require("../models");
+const { User } = require("../models");
 
 // Gat all delivery guys how were accepted
-const getAccepted = (req, res) => {
-    console.log("Get all accepted delivery guys");
-}
+const getAccepted = async (req, res) => {
+  User.where("role.status")
+    .equals("accepted")
+    .exec()
+    .then((result) => {
+      if (!result) {
+        res.status(404).json({ message: "No accepted delivery guy found" });
+      } else {
+        res.status(200).json({ result });
+      }
+    });
+};
 
 // Gat all delivery guys how were refused
 const getRefused = (req, res) => {
-    console.log("Get all refused delivery guys");
-}
+  console.log("Get all refused delivery guys");
+};
 
 module.exports = {
-    getAccepted,
-    getRefused,
-}
+  getAccepted,
+  getRefused,
+};
