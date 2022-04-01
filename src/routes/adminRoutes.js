@@ -49,9 +49,9 @@ router.route("/acceptDeliveryguy").post(Admins.acceptDeliveryguy);
 router.route("/refuseDeliveryguy").post(Admins.refuseDeliveryguy);
 
 // Get accepted delivery guy
-router.route("/acceptedDeliveryguy").get(DeliveryGuys.getAccepted);
+router.route("/acceptedDeliveryguys").get(DeliveryGuys.getAccepted);
 
 // Get refused delivery guy
-router.route("/refusedDeliveryguy").get(DeliveryGuys.getRefused);
+router.route("/refusedDeliveryguys").get(DeliveryGuys.getRefused);
 
 module.exports = router;
