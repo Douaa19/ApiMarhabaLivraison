@@ -1,14 +1,27 @@
 const mongoose = require("mongoose");
-const { Clients } = require("../models");
+const { User } = require("../models");
 
 // Get all clients
 const getClients = (req, res) => {
-  console.log("Get all clients");
+  try {
+    User.where("role.name")
+      .equals("client")
+      .exec()
+      .then((result) => {
+        if (!result) {
+          res.status(404).json({ message: "No client found!" });
+        } else {
+          res.status(200).json({ result });
+        }
+      });
+  } catch (error) {
+    res.json(error.message);
+  }
 };
 
 // Get one client
 const getClient = (req, res) => {
-  console.log("Get one client");
+  
 };
 
 // Delete one client
