@@ -14,9 +14,7 @@ const {
 } = require("../controllers");
 
 // Create announce
-router
-  .route("/create/announce")
-  .post(Announces.createAnnounce);
+router.route("/create/announce").post(Announces.createAnnounce);
 
 // Get all announces
 router.route("/announces").get(Announces.getAnnounces);
@@ -45,10 +43,10 @@ router
   .delete(Commands.deleteCommand);
 
 // Accept delivery guy
-router.route("/acceptDeliveryguy/Id").post(Admins.acceptDeliveryguy);
+router.route("/acceptDeliveryguy").post(Admins.acceptDeliveryguy);
 
 // Refuse delivery guy
-router.route("/refuseDeliveryguy/Id").post(Admins.refuseDeliveryguy);
+router.route("/refuseDeliveryguy").post(Admins.refuseDeliveryguy);
 
 // Get accepted delivery guy
 router.route("/acceptedDeliveryguy").get(DeliveryGuys.getAccepted);
