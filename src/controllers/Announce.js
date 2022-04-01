@@ -5,25 +5,24 @@ const createAnnounce = async (req, res) => {
   try {
     const category = await Category.findOne({ name: req.body.category }).then(
       (result) => {
-        if (result === null) {
+        if (result !== null) {
+          Announces.create({
+              title: req.body.title,
+              description: req.body.description,
+              price: req.body.price,
+              category_id: result._id,
+            }).then((response) => {
+              res.json({ message: "New announce created!" });
+            });
+          } else {
           res
             .status(400)
             .json({ message: "Category not found! You should create it" });
-        } else {
-          Announces.create({
-            title: req.body.title,
-            description: req.body.description,
-            price: req.body.price,
-            category_id: result._d,
-          }).then((response) => {
-            res.json({ message: "New announce created!" });
-          });
         }
       }
     );
   } catch (error) {
-    // res.json(error.message);
-    console.log(error);
+    res.json(error.message);
   }
 };
 
@@ -35,7 +34,12 @@ const getAnnounces = async (req, res) => {
   res.status(200).json(annons);
 };
 
-const getAnnounce = async (req, res) => {};
+const getAnnounce = async (req, res) => {
+  await Announces.findById({ _id: req.body.Id }).then((err, result) => {
+    if (!result) res.json(err);
+    res.status(200).json(result);
+  });
+};
 
 const deleteAnnounce = async (req, res) => {
   try {
