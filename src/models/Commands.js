@@ -8,16 +8,22 @@ const Commands = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["new", "prepared", "delivered"],
+    enum: ["new", "prepared", "delivered", "lunched"],
+    default: "new",
   },
   totale: {
     type: Number,
     required: true,
   },
-  delivelyGuy_id: {
+  client_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "User",
+  },
+  delivelyGuy_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
   },
 });
 

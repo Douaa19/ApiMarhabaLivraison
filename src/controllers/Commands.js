@@ -1,10 +1,20 @@
 const mongoose = require("mongoose");
-const { Commands } = require("../models");
+const { Command } = require("../models");
+
+// Create command
+const createCommand = async (req, res) => {
+  await Command.create({
+    address: req.body.address,
+    totale: req.body.totale,
+    client_id: req.body.client_id,
+    status: "new",
+  }).then((response) => {
+    res.json({ message: "Command is created!" });
+  });
+};
 
 // Get all commands
-const getCommands = (req, res) => {
-  console.log("Get all commands");
-};
+const getCommands = async (req, res) => {};
 
 // Get one command
 const getCommand = (req, res) => {
@@ -22,6 +32,7 @@ const updateCommand = (req, res) => {
 };
 
 module.exports = {
+  createCommand,
   getCommands,
   getCommand,
   deleteCommand,
