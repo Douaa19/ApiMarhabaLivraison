@@ -95,8 +95,40 @@ const updateStatus = async (req, res) => {
           res.status(200).json({ message: "This order is your next move!" });
         }
       );
-    } else if (command[0].status === "prepared") {
-      res.json({ message: "This order is token!" });
+    } else if (command && command[0].status === "prepared") {
+      if (command[0].delivelyGuy_id == req.body.delivelyGuy_id) {
+        // command[0].status = "delivered";
+        Command.findByIdAndUpdate(
+          req.body.command_id,
+          { status: "delivered" },
+          (err, response) => {
+            if (err) res.json(err);
+            res.status(200).json({ message: "Order delivered!" });
+          }
+        );
+      } else {
+        res.json({
+          message:
+            "You don't have the right to change the status of this order!",
+        });
+      }
+    } else if (command && command[0].status === "delivered") {
+      if (command[0].delivelyGuy_id == req.body.delivelyGuy_id) {
+        // command[0].status = "delivered";
+        Command.findByIdAndUpdate(
+          req.body.command_id,
+          { status: "lunched" },
+          (err, response) => {
+            if (err) res.json(err);
+            res.status(200).json({ message: "Order lunched!" });
+          }
+        );
+      } else {
+        res.json({
+          message:
+            "You don't have the right to change the status of this order!",
+        });
+      }
     }
   } catch (error) {
     res.json(error);
