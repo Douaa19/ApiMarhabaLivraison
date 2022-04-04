@@ -4,10 +4,10 @@ const router = express.Router();
 const { DeliveryGuys, Commands } = require("../controllers");
 
 // Get all commands
-router.route("/delivery").get(Commands.getCommands);
+router.route("/commands").get(Commands.getCommands);
 
 // Get one command
-router.route("/command").get(Commands.getCommand);
+router.route("/command").get(Commands.getCommand).put(Commands.updateStatus);
 
 // 
 

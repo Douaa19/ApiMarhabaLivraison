@@ -75,6 +75,15 @@ const updateCommand = (req, res) => {
   console.log("Update one command");
 };
 
+// Update command status
+const updateStatus = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    res.json(error.message)
+  }
+};
+
 module.exports = {
   createCommand,
   getCommands,
@@ -83,4 +92,5 @@ module.exports = {
   getCommand,
   deleteCommand,
   updateCommand,
+  updateStatus,
 };
