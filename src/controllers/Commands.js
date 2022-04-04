@@ -78,15 +78,35 @@ const updateCommand = (req, res) => {
 // Update command status
 const updateStatus = async (req, res) => {
   try {
+    const command = await Command.find({ _id: req.body.command_id });
+    if (command && command[0].status === "new") {
+      command[0].status = "prepared";
+      Command.findByIdAndUpdate(
+        req.body.command_id,
+        {
+          address: command[0].address,
+          status: command[0].status,
+          total: command[0].total,
+          client_id: command[0].client_id,
+          $set: { delivelyGuy_id: req.body.delivelyGuy_id },
+        },
+        (err, response) => {
+          if (err) res.json(err);
+          res.status(200).json({ message: "This order is your next move!" });
+        }
+      );
+    } else if (command[0].status === "prepared") {
+      res.json({ message: "This order is token!" });
+    }
   } catch (error) {
-    res.json(error.message);
+    res.json(error);
   }
 };
 
 // Get all commands with new status
 const getNewCommands = async (req, res) => {
   try {
-    const newCom = await Command.find({status: "new"});
+    const newCom = await Command.find({ status: "new" });
     if (!newCom) res.status(404).json({ message: "No new commands found" });
     res.status(200).json(newCom);
   } catch (error) {
