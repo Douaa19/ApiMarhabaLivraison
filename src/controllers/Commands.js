@@ -14,11 +14,29 @@ const createCommand = async (req, res) => {
 };
 
 // Get all commands
-const getCommands = async (req, res) => {};
+const getCommands = async (req, res) => {
+  try {
+    const myCom = await Command.find({ client_id: req.body.Id });
+    console.log(myCom);
+  } catch (error) {
+    res.json(error.message);
+  }
+};
 
 // Get one command
-const getCommand = (req, res) => {
-  console.log("Get one command");
+const getCommand = async (req, res) => {
+  try {
+    const command = await Command.find({
+      $and: [{ _id: req.body.command_id }, { client_id: req.body.client_id }],
+    });
+    if (command) {
+      res.status(200).json(command);
+    } else {
+      res.status(404).json({ message: "Command not found!" });
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
 };
 
 // Delete one command
