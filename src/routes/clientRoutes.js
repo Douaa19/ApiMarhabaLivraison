@@ -7,12 +7,13 @@ const { Commands } = require("../controllers");
 router.route("/create").post(Commands.createCommand);
 
 // Get all commands
-router.route("/commands").get(Commands.getCommands);
+router.route("/commands").get(Commands.getClientCommands);
 
 // Get all commands
 router
   .route("/command")
-  .get(Commands.getCommand)
+  .get(Commands.getClientCommand)
+  .put(Commands.updateCommand)
   .delete(Commands.deleteCommand);
 
 module.exports = router;
