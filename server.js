@@ -15,7 +15,7 @@ const { authorization } = require("./src/middlewares/autorization");
 const authentificationRoutes = require("./src/routes/authentificationRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
 const categoryRoutes = require("./src/routes/categoryRoutes");
-// const clientRoutes = require("./src/routes/clientRoutes");
+const clientRoutes = require("./src/routes/clientRoutes");
 // const deliverygayRoutes = require("./src/routes/deliveryguyRoutes");
 // const commandRoutes = require("./src/routes/commandRoutes");
 // const announceRoutes = require("./src/routes/announceRoutes");
@@ -41,6 +41,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authentificationRoutes);
 app.use("/admin", adminRoutes);
 app.use("/category", categoryRoutes);
+app.use("/clients", clientRoutes);
 
 app.listen(PORT, () =>
   console.log(`server is running at : http://localhost:${PORT}`)
