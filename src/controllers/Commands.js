@@ -13,22 +13,48 @@ const createCommand = async (req, res) => {
   });
 };
 
-// Get all commands
+// Get all commands by client id
 const getCommands = async (req, res) => {
   try {
-    const myCom = await Command.find({ client_id: req.body.Id });
-    console.log(myCom);
+    const commands = await Command.find();
+    if (!commands) res.status(404).json({ message: "Commands not found!" });
+    res.status(200).json(commands);
   } catch (error) {
     res.json(error.message);
   }
 };
 
-// Get one command
-const getCommand = async (req, res) => {
+// Get all commands
+const getClientCommands = async (req, res) => {
+  try {
+    const myCom = await Command.find({ client_id: req.body.Id });
+    if (!myCom) res.status(404).json({ message: "Commands not found!" });
+    res.status(200).json(myCom);
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// Get one command by client_id and command_id
+const getClientCommand = async (req, res) => {
   try {
     const command = await Command.find({
       $and: [{ _id: req.body.command_id }, { client_id: req.body.client_id }],
     });
+    if (command) {
+      res.status(200).json(command);
+    } else {
+      res.status(404).json({ message: "Command not found!" });
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// Get one command by command_id
+const getCommand = async (req, res) => {
+  try {
+    const command = await Command.findById(req.body.command_id);
     if (command) {
       res.status(200).json(command);
     } else {
@@ -52,6 +78,8 @@ const updateCommand = (req, res) => {
 module.exports = {
   createCommand,
   getCommands,
+  getClientCommands,
+  getClientCommand,
   getCommand,
   deleteCommand,
   updateCommand,

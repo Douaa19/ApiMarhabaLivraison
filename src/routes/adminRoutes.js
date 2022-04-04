@@ -37,7 +37,7 @@ router.route("/commands").get(Commands.getCommands);
 
 // Get one command
 router
-  .route("/command/Id")
+  .route("/command")
   .get(Commands.getCommand)
   .put(Commands.updateCommand)
   .delete(Commands.deleteCommand);
