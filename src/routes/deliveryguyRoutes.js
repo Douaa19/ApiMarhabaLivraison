@@ -6,9 +6,12 @@ const { DeliveryGuys, Commands } = require("../controllers");
 // Get all commands
 router.route("/commands").get(Commands.getCommands);
 
+//
+router.route("/newCommands").get(Commands.getNewCommands);
+
 // Get one command
 router.route("/command").get(Commands.getCommand).put(Commands.updateStatus);
 
-// 
+//
 
 module.exports = router;

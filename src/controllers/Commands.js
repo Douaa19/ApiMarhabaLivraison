@@ -78,9 +78,19 @@ const updateCommand = (req, res) => {
 // Update command status
 const updateStatus = async (req, res) => {
   try {
-    
   } catch (error) {
-    res.json(error.message)
+    res.json(error.message);
+  }
+};
+
+// Get all commands with new status
+const getNewCommands = async (req, res) => {
+  try {
+    const newCom = await Command.find({status: "new"});
+    if (!newCom) res.status(404).json({ message: "No new commands found" });
+    res.status(200).json(newCom);
+  } catch (error) {
+    res.json(error.message);
   }
 };
 
@@ -93,4 +103,5 @@ module.exports = {
   deleteCommand,
   updateCommand,
   updateStatus,
+  getNewCommands,
 };
