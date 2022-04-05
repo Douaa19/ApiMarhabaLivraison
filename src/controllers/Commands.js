@@ -1,16 +1,40 @@
+const { response } = require("express");
 const mongoose = require("mongoose");
-const { Command } = require("../models");
+const { Command, Announces, CommandProduct } = require("../models");
 
 // Create command
 const createCommand = async (req, res) => {
-  await Command.create({
-    address: req.body.address,
-    totale: req.body.totale,
-    client_id: req.body.client_id,
-    status: "new",
-  }).then((response) => {
-    res.json({ message: "Command is created!" });
-  });
+  try {
+    Command.create({
+      address: req.body.address,
+      totale: 0,
+      client_id: req.body.client_id,
+      status: "new",
+    }).then((response) => {
+      if (!response) {
+        res.json({ message: "Command not created" });
+      } else {
+        res.json({ message: "Command created!" });
+        Announces.findById(req.body.product_id, (err, product) => {
+          if (!product) {
+            res.json({ message: "Product not found!" });
+          } else {
+            CommandProduct.create({
+              command_id: response._id,
+              product_id: product._id,
+              command_price: product.price,
+              quantity: req.body.quantity,
+              total: product.price * req.body.quantity,
+            }).then((err, response) => {
+              console.log(response);
+            });
+          }
+        });
+      }
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
 };
 
 // Get all commands by client id

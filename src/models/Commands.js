@@ -13,7 +13,7 @@ const Commands = new mongoose.Schema({
   },
   totale: {
     type: Number,
-    required: true,
+    required: false,
   },
   client_id: {
     type: mongoose.Schema.Types.ObjectId,
