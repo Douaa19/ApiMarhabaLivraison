@@ -146,6 +146,20 @@ const getNewCommands = async (req, res) => {
   }
 };
 
+// Get status command
+const statusCommand = async (req, res) => {
+  const command = await Command.findOne({ _id: req.body.command_id });
+  if (!command) res.status(404).json({ message: "Command no found!" });
+  if (
+    command.client_id == req.body.client_id &&
+    command.delivelyGuy_id == req.body.delivelyGuy_id
+  ) {
+    res.status(200).json(command.status);
+  } else {
+    res.json({ message: "You don't have the permission to see status order" });
+  }
+};
+
 module.exports = {
   createCommand,
   getCommands,
@@ -156,4 +170,5 @@ module.exports = {
   updateCommand,
   updateStatus,
   getNewCommands,
+  statusCommand,
 };

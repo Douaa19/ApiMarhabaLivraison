@@ -16,4 +16,7 @@ router
   .put(Commands.updateCommand)
   .delete(Commands.deleteCommand);
 
+// Command status
+router.route("/status").get(Commands.statusCommand);
+
 module.exports = router;
