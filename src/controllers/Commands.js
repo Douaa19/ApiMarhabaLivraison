@@ -35,7 +35,6 @@ const createCommand = async (req, res) => {
                     response.forEach((element) => {
                       totale += element.total;
                     });
-                    
                   }
                 );
               }
@@ -102,8 +101,20 @@ const getCommand = async (req, res) => {
 };
 
 // Delete one command
-const deleteCommand = (req, res) => {
-  console.log("Delete one command");
+const deleteCommand = async (req, res) => {
+  Command.findById(req.body.Id, (err, result) => {
+    if (result) {
+      if (result.status === "new") {
+        Command.findByIdAndDelete(req.body.Id).then((response) =>
+          res.status(200).json({ message: "Command deleted successfully!" })
+        );
+      } else {
+        res.json({ message: "Sorry! You can't delete this command" });
+      }
+    } else {
+      res.status(404).json({ message: "Command not found!" });
+    }
+  });
 };
 
 // Update one command
@@ -128,7 +139,12 @@ const updateStatus = async (req, res) => {
         },
         (err, response) => {
           if (err) res.json(err);
-          res.status(200).json({ message: "This order is your next move!" });
+          res
+            .status(200)
+            .json({
+              message: "This order is your next move!",
+              status: "Order in production",
+            });
         }
       );
     } else if (command && command[0].status === "prepared") {
