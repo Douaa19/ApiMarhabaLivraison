@@ -1,6 +1,6 @@
 const { response } = require("express");
 const mongoose = require("mongoose");
-const { Command, Announces, CommandProduct } = require("../models");
+const { Command, CommandProduct, User, Announces } = require("../models");
 
 // Create command
 const createCommand = async (req, res) => {
@@ -42,13 +42,29 @@ const createCommand = async (req, res) => {
               totale.forEach((t) => {
                 Totale += t;
               });
-              Command.findByIdAndUpdate(
-                response._id,
-                { totale: Totale },
-                (err, resl) => {
-                  console.log(resl);
-                }
-              );
+              Command.findByIdAndUpdate(response._id, { totale: Totale });
+              // Create bill
+              User.findById(req.body.client_id, (err, client) => {
+                const products = Announces.find(
+                  { _id: product_id },
+                  (err, products) => {
+                    let product_title = [];
+                    products.forEach((product) => {
+                      product_title.push(product.title);
+                    });
+                    const billInfos = {
+                      clientName: client.username,
+                      address: req.body.address,
+                      product_title: product_title,
+                      quantity: quantity,
+                      product_price: price,
+                      Total_price: Totale,
+                    };
+
+                    console.log(billInfos);
+                  }
+                );
+              });
             }
           }
         );

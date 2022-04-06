@@ -15,7 +15,6 @@ const getCategories = async (req, res) => {
 
 // Get all categories
 const createCategory = async (req, res) => {
-  console.log(req.body.name);
   try {
     const newCategory = await Category.create({ name: req.body.name });
     if (newCategory)
