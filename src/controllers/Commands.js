@@ -1,16 +1,51 @@
+const { response } = require("express");
 const mongoose = require("mongoose");
-const { Command } = require("../models");
+const { Command, Announces, CommandProduct } = require("../models");
 
 // Create command
 const createCommand = async (req, res) => {
-  await Command.create({
-    address: req.body.address,
-    totale: req.body.totale,
-    client_id: req.body.client_id,
-    status: "new",
-  }).then((response) => {
-    res.json({ message: "Command is created!" });
-  });
+  try {
+    Command.create({
+      address: req.body.address,
+      totale: 0,
+      client_id: req.body.client_id,
+      status: "new",
+    }).then((response) => {
+      if (!response) {
+        res.json({ message: "Command not created" });
+      } else {
+        res.json({ message: "Command created!" });
+        Announces.findById(req.body.product_id, (err, product) => {
+          if (!product) {
+            res.json({ message: "Product not found!" });
+          } else {
+            CommandProduct.create(
+              {
+                command_id: "624cd2099a0f056b090970fe",
+                product_id: product._id,
+                command_price: product.price,
+                quantity: req.body.quantity,
+                total: product.price * req.body.quantity,
+              },
+              (err, response) => {
+                // console.log(response.command_id);
+                let totale = 0;
+                CommandProduct.find({ command_id: response.command_id }).then(
+                  (response) => {
+                    response.forEach((element) => {
+                      totale += element.total;
+                    });
+                  }
+                );
+              }
+            );
+          }
+        });
+      }
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
 };
 
 // Get all commands by client id
@@ -66,8 +101,20 @@ const getCommand = async (req, res) => {
 };
 
 // Delete one command
-const deleteCommand = (req, res) => {
-  console.log("Delete one command");
+const deleteCommand = async (req, res) => {
+  Command.findById(req.body.Id, (err, result) => {
+    if (result) {
+      if (result.status === "new") {
+        Command.findByIdAndDelete(req.body.Id).then((response) =>
+          res.status(200).json({ message: "Command deleted successfully!" })
+        );
+      } else {
+        res.json({ message: "Sorry! You can't delete this command" });
+      }
+    } else {
+      res.status(404).json({ message: "Command not found!" });
+    }
+  });
 };
 
 // Update one command
@@ -92,7 +139,12 @@ const updateStatus = async (req, res) => {
         },
         (err, response) => {
           if (err) res.json(err);
-          res.status(200).json({ message: "This order is your next move!" });
+          res
+            .status(200)
+            .json({
+              message: "This order is your next move!",
+              status: "Order in production",
+            });
         }
       );
     } else if (command && command[0].status === "prepared") {
