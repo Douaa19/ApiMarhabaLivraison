@@ -15,32 +15,43 @@ const createCommand = async (req, res) => {
         res.json({ message: "Command not created" });
       } else {
         res.json({ message: "Command created!" });
-        Announces.findById(req.body.product_id, (err, product) => {
-          if (!product) {
-            res.json({ message: "Product not found!" });
-          } else {
-            CommandProduct.create(
-              {
-                command_id: "624cd2099a0f056b090970fe",
-                product_id: product._id,
-                command_price: product.price,
-                quantity: req.body.quantity,
-                total: product.price * req.body.quantity,
-              },
-              (err, response) => {
-                // console.log(response.command_id);
-                let totale = 0;
-                CommandProduct.find({ command_id: response.command_id }).then(
-                  (response) => {
-                    response.forEach((element) => {
-                      totale += element.total;
-                    });
-                  }
-                );
-              }
-            );
-          }
+
+        // Create arrays
+        let product_id = [];
+        let quantity = [];
+        let price = [];
+        let totale = [];
+        req.body.products.forEach((product) => {
+          product_id.push(product.product_id);
+          quantity.push(product.quantity);
+          price.push(product.price);
+          totale.push(product.price * product.quantity);
         });
+
+        CommandProduct.create(
+          {
+            command_id: response._id,
+            product_id: product_id,
+            command_price: price,
+            quantity: quantity,
+            total: totale,
+          },
+          (err, result) => {
+            if (result) {
+              let Totale = 0;
+              totale.forEach((t) => {
+                Totale += t;
+              });
+              Command.findByIdAndUpdate(
+                response._id,
+                { totale: Totale },
+                (err, resl) => {
+                  console.log(resl);
+                }
+              );
+            }
+          }
+        );
       }
     });
   } catch (error) {
@@ -139,12 +150,10 @@ const updateStatus = async (req, res) => {
         },
         (err, response) => {
           if (err) res.json(err);
-          res
-            .status(200)
-            .json({
-              message: "This order is your next move!",
-              status: "Order in production",
-            });
+          res.status(200).json({
+            message: "This order is your next move!",
+            status: "Order in production",
+          });
         }
       );
     } else if (command && command[0].status === "prepared") {
