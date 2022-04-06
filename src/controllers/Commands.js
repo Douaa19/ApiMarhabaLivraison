@@ -19,15 +19,27 @@ const createCommand = async (req, res) => {
           if (!product) {
             res.json({ message: "Product not found!" });
           } else {
-            CommandProduct.create({
-              command_id: response._id,
-              product_id: product._id,
-              command_price: product.price,
-              quantity: req.body.quantity,
-              total: product.price * req.body.quantity,
-            }).then((err, response) => {
-              console.log(response);
-            });
+            CommandProduct.create(
+              {
+                command_id: "624cd2099a0f056b090970fe",
+                product_id: product._id,
+                command_price: product.price,
+                quantity: req.body.quantity,
+                total: product.price * req.body.quantity,
+              },
+              (err, response) => {
+                // console.log(response.command_id);
+                let totale = 0;
+                CommandProduct.find({ command_id: response.command_id }).then(
+                  (response) => {
+                    response.forEach((element) => {
+                      totale += element.total;
+                    });
+                    
+                  }
+                );
+              }
+            );
           }
         });
       }
