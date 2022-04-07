@@ -38,75 +38,10 @@ const createCommand = async (req, res) => {
           },
           (err, result) => {
             if (result) {
-              let Totale = 0;
-              totale.forEach((t) => {
-                Totale += t;
-              });
               Command.findByIdAndUpdate(response._id, { totale: Totale }).then(
-                (response) => {
-                  // Create bill
-                  User.findById(req.body.client_id, (err, client) => {
-                    const products = Announces.find(
-                      { _id: product_id },
-                      (err, products) => {
-                        let product_title = [];
-                        products.forEach((product) => {
-                          product_title.push(product.title);
-                        });
-                        const billInfos = {
-                          clientName: client.username,
-                          address: req.body.address,
-                          product_title: product_title,
-                          quantity: quantity,
-                          product_price: price,
-                          Total_price: Totale,
-                        };
-
-                        const transporter = nodemailer.createTransport({
-                          service: "gmail",
-                          auth: {
-                            user: "doua.larif@gmail.com",
-                            password: "douaalarif1997",
-                          },
-                        });
-
-                        const mailOptions = {
-                          from: "doua.larif@gmail.com",
-                          to: "douaa.larif04@gmail.com",
-                          subject: "Facture",
-                          html: `<h1>Facture N°1</h1>
-                            <table>
-                              <thead>
-                              <tr>
-                                <th>Nom client</th>
-                                <th>Adresse</th>
-                                <th>Repas</th>
-                                <th>Quantité</th>
-                                <th>Prix</th>
-                                <th>Totale</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                billInfos.forEach((product) => {
-                                  <td>${billInfos.clientName}</td>
-                                  <td>${billInfos.address}</td>
-                                  <td>${billInfos.product_title}</td>
-                                  <td>${billInfos.product_price}</td>
-                                  <td>${billInfos.quantity}</td>
-                                  <td>${billInfos.Total_price}</td>
-                                });
-                                </tr>
-                              </tbody>
-                            </table>`,
-                        };
-
-                        transporter.sendMail(mailOptions, function (err, info) {
-                          console.log("Email sent");
-                        });
-                      }
-                    );
-                  });
+                (err, response) => {
+                  if (err) res.json(err);
+                  res.json({ message: "Total command is updated!" });
                 }
               );
             }
@@ -241,7 +176,103 @@ const updateStatus = async (req, res) => {
           { status: "lunched" },
           (err, response) => {
             if (err) res.json(err);
-            res.status(200).json({ message: "Order lunched!" });
+            // Create bill
+            CommandProduct.find(
+              { command_id: req.body.command_id },
+              (err, compro) => {
+                User.findById(command[0].client_id, (err, client) => {
+                  if (!client)
+                    res.status(404).json({ message: "Client not found!" });
+                  const clientName = client.username;
+                  Announces.find(
+                    { _id: compro[0].product_id },
+                    (err, products) => {
+                      if (!products)
+                        res.status(404).json({ message: "Product not found!" });
+                      let product_title = [];
+                      products.forEach((product) => {
+                        product_title.push(product.title);
+                      });
+
+                      let Total = 0;
+                      compro[0].total.forEach((t) => {
+                        Total += t;
+                      });
+                      let total_quantity = 0;
+                      compro[0].quantity.forEach((t) => {
+                        total_quantity += t;
+                      });
+
+                      const billInfos = {
+                        clientName: clientName,
+                        address: command[0].address,
+                        product_title: product_title,
+                        quantity: compro[0].quantity,
+                        total_quantity: total_quantity,
+                        product_price: compro[0].command_price,
+                        Total_price: Total,
+                      };
+                      console.log(billInfos);
+                    }
+                  );
+                });
+              }
+            );
+
+            // User.findById(req.body.client_id, (err, client) => {
+            //   Announces.find(
+            //     { _id: product_id },
+            //     (err, products) => {
+            //       let product_title = [];
+            //       products.forEach((product) => {
+            //         product_title.push(product.title);
+            //       });
+
+            // const transporter = nodemailer.createTransport({
+            //   service: "gmail",
+            //   auth: {
+            //     user: "doua.larif@gmail.com",
+            //     password: "douaalarif1997",
+            //   },
+            // });
+
+            // const mailOptions = {
+            //   from: "doua.larif@gmail.com",
+            //   to: "douaa.larif04@gmail.com",
+            //   subject: "Facture",
+            //   html: `<h1>Facture N°1</h1>
+            //     <table>
+            //       <thead>
+            //       <tr>
+            //         <th>Nom client</th>
+            //         <th>Adresse</th>
+            //         <th>Repas</th>
+            //         <th>Quantité</th>
+            //         <th>Prix</th>
+            //         <th>Totale</th>
+            //       </tr>
+            //       </thead>
+            //       <tbody>
+            //         <tr>
+            //         billInfos.forEach((product) => {
+            //           <td>${billInfos.clientName}</td>
+            //           <td>${billInfos.address}</td>
+            //           <td>${billInfos.product_title}</td>
+            //           <td>${billInfos.product_price}</td>
+            //           <td>${billInfos.quantity}</td>
+            //           <td>${billInfos.Total_price}</td>
+            //         });
+            //         </tr>
+            //       </tbody>
+            //     </table>`,
+            // };
+
+            // transporter.sendMail(mailOptions, function (err, info) {
+            //   console.log("Email sent");
+            // });
+            // }
+            // );
+            // });
           }
         );
       } else {
