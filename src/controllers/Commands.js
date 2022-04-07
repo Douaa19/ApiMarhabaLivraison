@@ -1,5 +1,5 @@
-const { response } = require("express");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
 const { Command, CommandProduct, User, Announces } = require("../models");
 
 // Create command
@@ -42,29 +42,73 @@ const createCommand = async (req, res) => {
               totale.forEach((t) => {
                 Totale += t;
               });
-              Command.findByIdAndUpdate(response._id, { totale: Totale });
-              // Create bill
-              User.findById(req.body.client_id, (err, client) => {
-                const products = Announces.find(
-                  { _id: product_id },
-                  (err, products) => {
-                    let product_title = [];
-                    products.forEach((product) => {
-                      product_title.push(product.title);
-                    });
-                    const billInfos = {
-                      clientName: client.username,
-                      address: req.body.address,
-                      product_title: product_title,
-                      quantity: quantity,
-                      product_price: price,
-                      Total_price: Totale,
-                    };
+              Command.findByIdAndUpdate(response._id, { totale: Totale }).then(
+                (response) => {
+                  // Create bill
+                  User.findById(req.body.client_id, (err, client) => {
+                    const products = Announces.find(
+                      { _id: product_id },
+                      (err, products) => {
+                        let product_title = [];
+                        products.forEach((product) => {
+                          product_title.push(product.title);
+                        });
+                        const billInfos = {
+                          clientName: client.username,
+                          address: req.body.address,
+                          product_title: product_title,
+                          quantity: quantity,
+                          product_price: price,
+                          Total_price: Totale,
+                        };
 
-                    console.log(billInfos);
-                  }
-                );
-              });
+                        const transporter = nodemailer.createTransport({
+                          service: "gmail",
+                          auth: {
+                            user: "doua.larif@gmail.com",
+                            password: "douaalarif1997",
+                          },
+                        });
+
+                        const mailOptions = {
+                          from: "doua.larif@gmail.com",
+                          to: "douaa.larif04@gmail.com",
+                          subject: "Facture",
+                          html: `<h1>Facture N°1</h1>
+                            <table>
+                              <thead>
+                              <tr>
+                                <th>Nom client</th>
+                                <th>Adresse</th>
+                                <th>Repas</th>
+                                <th>Quantité</th>
+                                <th>Prix</th>
+                                <th>Totale</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                billInfos.forEach((product) => {
+                                  <td>${billInfos.clientName}</td>
+                                  <td>${billInfos.address}</td>
+                                  <td>${billInfos.product_title}</td>
+                                  <td>${billInfos.product_price}</td>
+                                  <td>${billInfos.quantity}</td>
+                                  <td>${billInfos.Total_price}</td>
+                                });
+                                </tr>
+                              </tbody>
+                            </table>`,
+                        };
+
+                        transporter.sendMail(mailOptions, function (err, info) {
+                          console.log("Email sent");
+                        });
+                      }
+                    );
+                  });
+                }
+              );
             }
           }
         );
