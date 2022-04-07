@@ -13,9 +13,9 @@ const Announces = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  //   images: [{
-  //     type: String,
-  // }],
+    images: {
+      type: String,
+  },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",

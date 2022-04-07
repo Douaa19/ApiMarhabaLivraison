@@ -11,6 +11,7 @@ const createAnnounce = async (req, res) => {
             description: req.body.description,
             price: req.body.price,
             category_id: result._id,
+            image: req.file
           }).then((response) => {
             res.json({ message: "New announce created!" });
           });

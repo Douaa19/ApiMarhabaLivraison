@@ -11,10 +11,13 @@ const {
   Clients,
   Commands,
   DeliveryGuys,
+  uploadImage,
 } = require("../controllers");
 
 // Create announce
-router.route("/create/announce").post(Announces.createAnnounce);
+router
+  .route("/create/announce")
+  .post(uploadImage.single("image"), Announces.createAnnounce);
 
 // Get all announces
 router.route("/announces").get(Announces.getAnnounces);
