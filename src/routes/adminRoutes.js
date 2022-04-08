@@ -17,44 +17,36 @@ const {
 // Create announce
 router
   .route("/create/announce")
-  .post(uploadImage.single("image"), Announces.createAnnounce);
-
-// Get all announces
-router.route("/announces").get(Announces.getAnnounces);
-
-// Get, delete and update announce
-router
-  .route("/announce")
-  .get(Announces.getAnnounce)
-  .delete(Announces.deleteAnnounce)
-  .put(Announces.updateAnnounce);
+  .post(
+    authorizationRole("admin"),
+    uploadImage.single("image"),
+    Announces.createAnnounce
+  );
 
 // Get all clients
-router.route("/clients").get(Clients.getClients);
-
-// Get all delivery guys
-router.route("/client").get(Clients.getClient).delete(Clients.deleteClient);
+router.route("/clients").get(authorizationRole("admin"), Clients.getClients);
 
 // Get all commands
-router.route("/commands").get(Commands.getCommands);
-
-// Get one command
-router
-  .route("/command")
-  .get(Commands.getCommand)
-  .put(Commands.updateCommand)
-  .delete(Commands.deleteCommand);
+router.route("/commands").get(authorizationRole("admin"), Commands.getCommands);
 
 // Accept delivery guy
-router.route("/acceptDeliveryguy").post(Admins.acceptDeliveryguy);
+router
+  .route("/acceptDeliveryguy")
+  .post(authorizationRole("admin"), Admins.acceptDeliveryguy);
 
 // Refuse delivery guy
-router.route("/refuseDeliveryguy").post(Admins.refuseDeliveryguy);
+router
+  .route("/refuseDeliveryguy")
+  .post(authorizationRole("admin"), Admins.refuseDeliveryguy);
 
 // Get accepted delivery guy
-router.route("/acceptedDeliveryguys").get(DeliveryGuys.getAccepted);
+router
+  .route("/acceptedDeliveryguys")
+  .get(authorizationRole("admin"), DeliveryGuys.getAccepted);
 
 // Get refused delivery guy
-router.route("/refusedDeliveryguys").get(DeliveryGuys.getRefused);
+router
+  .route("/refusedDeliveryguys")
+  .get(authorizationRole("admin"), DeliveryGuys.getRefused);
 
 module.exports = router;

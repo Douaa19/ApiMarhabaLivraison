@@ -8,9 +8,14 @@ const { authorizationRole } = require("../middlewares/autorization");
 const { Categories } = require("../controllers");
 
 // Get all categories
-router.route("/").get(Categories.getCategories).post(Categories.createCategory);
+router
+  .route("/")
+  .get(Categories.getCategories)
+  .post(authorizationRole("admin"), Categories.createCategory);
 
 // Delete category
-router.route("/Id").delete(Categories.deleteCategory);
+router
+  .route("/Id")
+  .delete(authorizationRole("admin"), Categories.deleteCategory);
 
 module.exports = router;

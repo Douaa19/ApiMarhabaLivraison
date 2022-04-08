@@ -1,22 +1,17 @@
 const express = require("express");
 const router = express.Router();
 
-const { Commands } = require("../controllers");
+const { Commands, Clients } = require("../controllers");
 
-// Create command
-router.route("/create").post(Commands.createCommand);
-
-// Get all commands
-router.route("/commands").get(Commands.getClientCommands);
-
-// Get all commands
-router
-  .route("/command")
-  .get(Commands.getClientCommand)
-  .put(Commands.updateCommand)
-  .delete(Commands.deleteCommand);
+const { authorizationRole } = require("../middlewares/autorization");
 
 // Command status
 router.route("/status").get(Commands.statusCommand);
+
+// Get and delete one client
+router
+  .route("/client")
+  .get(authorizationRole("admin"), Clients.getClient)
+  .delete(authorizationRole("admin"), Clients.deleteClient);
 
 module.exports = router;
