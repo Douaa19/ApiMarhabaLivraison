@@ -212,67 +212,55 @@ const updateStatus = async (req, res) => {
                         product_price: compro[0].command_price,
                         Total_price: Total,
                       };
-                      console.log(billInfos);
+
+                      const transporter = nodemailer.createTransport({
+                        service: "hotmail",
+                        auth: {
+                          user: "douaa.larif@outlook.fr",
+                          pass: "douaalarif1997",
+                        },
+                      });
+
+                      const mailOptions = {
+                        from: '"Douaa Larif" <douaa.larif@outlook.fr>',
+                        to: "doua.larif@gmail.com",
+                        subject: "Facture",
+                        html: `<table>
+                            <thead>
+                              <tr>
+                                <th>Nom de client</th>
+                                <th>Adresse</th>
+                                <th>Nom repas</th>
+                                <th>Quantité</th>
+                                <th>Prix</th>
+                                <th>Totale</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                  <td>${billInfos.clientName}</td>
+                                  <td>${billInfos.address}</td>
+                                  <td>${billInfos.product_title}</td>
+                                  <td>${billInfos.product_price}</td>
+                                  <td>${billInfos.quantity}</td>
+                                  <td>${billInfos.Total_price}</td>
+                                </tr>
+                            </tbody>
+                          </table>`,
+                      };
+
+                      transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                          res.json(error);
+                        } else {
+                          res.json({ message: "fature send!" });
+                        }
+                      });
                     }
                   );
                 });
               }
             );
-
-            // User.findById(req.body.client_id, (err, client) => {
-            //   Announces.find(
-            //     { _id: product_id },
-            //     (err, products) => {
-            //       let product_title = [];
-            //       products.forEach((product) => {
-            //         product_title.push(product.title);
-            //       });
-
-            // const transporter = nodemailer.createTransport({
-            //   service: "gmail",
-            //   auth: {
-            //     user: "doua.larif@gmail.com",
-            //     password: "douaalarif1997",
-            //   },
-            // });
-
-            // const mailOptions = {
-            //   from: "doua.larif@gmail.com",
-            //   to: "douaa.larif04@gmail.com",
-            //   subject: "Facture",
-            //   html: `<h1>Facture N°1</h1>
-            //     <table>
-            //       <thead>
-            //       <tr>
-            //         <th>Nom client</th>
-            //         <th>Adresse</th>
-            //         <th>Repas</th>
-            //         <th>Quantité</th>
-            //         <th>Prix</th>
-            //         <th>Totale</th>
-            //       </tr>
-            //       </thead>
-            //       <tbody>
-            //         <tr>
-            //         billInfos.forEach((product) => {
-            //           <td>${billInfos.clientName}</td>
-            //           <td>${billInfos.address}</td>
-            //           <td>${billInfos.product_title}</td>
-            //           <td>${billInfos.product_price}</td>
-            //           <td>${billInfos.quantity}</td>
-            //           <td>${billInfos.Total_price}</td>
-            //         });
-            //         </tr>
-            //       </tbody>
-            //     </table>`,
-            // };
-
-            // transporter.sendMail(mailOptions, function (err, info) {
-            //   console.log("Email sent");
-            // });
-            // }
-            // );
-            // });
           }
         );
       } else {
