@@ -38,10 +38,20 @@ const createCommand = async (req, res) => {
           },
           (err, result) => {
             if (result) {
-              Command.findByIdAndUpdate(response._id, { totale: Totale }).then(
+              let Totale = 0;
+              totale.forEach((t) => {
+                Totale += t;
+              });
+              Command.findByIdAndUpdate(
+                response._id,
+                { totale: Totale },
                 (err, response) => {
-                  if (err) res.json(err);
-                  res.json({ message: "Total command is updated!" });
+                  console.log("totale updated!");
+                  // if (err) {
+                  //   res.json(err);
+                  // } else {
+                  //   res.json({ message: "Total command is updated!" });
+                  // }
                 }
               );
             }
@@ -241,8 +251,8 @@ const updateStatus = async (req, res) => {
                                   <td>${billInfos.clientName}</td>
                                   <td>${billInfos.address}</td>
                                   <td>${billInfos.product_title}</td>
-                                  <td>${billInfos.product_price}</td>
                                   <td>${billInfos.quantity}</td>
+                                  <td>${billInfos.product_price}</td>
                                   <td>${billInfos.Total_price}</td>
                                 </tr>
                             </tbody>
