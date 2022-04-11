@@ -18,6 +18,9 @@ router
   .put(Commands.updateCommand)
   .delete(authorizationRole("admin", "client"), Commands.deleteCommand)
   .get(Commands.getCommand)
+
+router
+.route("/updateStatus")
   .put(authorizationRole("deliveryguy"), Commands.updateStatus);
 
 module.exports = router;
