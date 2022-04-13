@@ -11,7 +11,7 @@ const createAnnounce = async (req, res) => {
             description: req.body.description,
             price: req.body.price,
             category_id: result._id,
-            image: req.file,
+            images: req.file.originalname,
           }).then((response) => {
             res.json({ message: "New announce created!" });
           });
@@ -29,10 +29,14 @@ const createAnnounce = async (req, res) => {
 
 const getAnnounces = async (req, res) => {
   const annons = await Announces.find();
-  if (!annons) {
-    res.status(400).json({ message: "No announces found" });
+  try {
+    if (!annons) {
+      res.status(400).json({ message: "No announces found" });
+    }
+    res.status(200).json(annons);
+  } catch (error) {
+    res.json(error)
   }
-  res.status(200).json(annons);
 };
 
 const getAnnounce = async (req, res) => {
