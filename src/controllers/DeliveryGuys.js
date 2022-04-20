@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { User } = require("../models");
 
-// Gat all delivery guys how were accepted
+// Get all delivery guys how were accepted
 const getAccepted = async (req, res) => {
   try {
     User.where("role.status")
@@ -11,7 +11,7 @@ const getAccepted = async (req, res) => {
         if (!result) {
           res.status(404).json({ message: "No accepted delivery guy found" });
         } else {
-          res.status(200).json({ result });
+          res.status(200).json(result);
         }
       });
   } catch (error) {
@@ -19,7 +19,25 @@ const getAccepted = async (req, res) => {
   }
 };
 
-// Gat all delivery guys how were refused
+// // Get all delivery guys how were pending
+const getPending = async (req, res) => {
+  try {
+    User.where("role.status")
+      .equals("pending")
+      .exec()
+      .then((result) => {
+        if (!result) {
+          res.status(404).json({ message: "No pending delivery guy found" });
+        } else {
+          res.status(200).json(result);
+        }
+      });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// Get all delivery guys how were refused
 const getRefused = async (req, res) => {
   try {
     User.where("role.status")
@@ -29,7 +47,7 @@ const getRefused = async (req, res) => {
         if (!result) {
           res.status(404).json({ message: "No refused delivery guy found" });
         } else {
-          res.status(200).json({ result });
+          res.status(200).json(result);
         }
       });
   } catch (error) {
@@ -39,5 +57,6 @@ const getRefused = async (req, res) => {
 
 module.exports = {
   getAccepted,
+  getPending,
   getRefused,
 };

@@ -38,32 +38,32 @@ const handleRegister = (req, res) => {
 // Handling login
 const handleLogin = (req, res) => {
   (async () => {
-      if (!req.body.email) res.json("email is not here!");
-      // Find user's email in the data base
-      const user = await User.findOne({ email: req.body.email });
-      if (!user) {
-        res.json({ message: "User not found!" });
-      } else if (!req.body.password) {
-        res.json({ message: "password is not here!" });
-      } else {
-        await user
-          .comparePasswords(req.body.password)
-          .then((result) => {
-            if (!result) {
-              res.json({ message: "Password in incorrect! Please try again." });
-            } else {
-              const id = user._id;
-              const role = user.role;
-              const username = user.username;
-              const myToken = jwt.sign(
-                { id, role, username },
-                process.env.JWT_ACCESS_SECRET
-              );
-              res.json({myToken});
-            }
-          })
-          .catch((err) => console.log({ err }));
-      }
+    if (!req.body.email) res.json("email is not here!");
+    // Find user's email in the data base
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      res.json({ message: "User not found!" });
+    } else if (!req.body.password) {
+      res.json({ message: "password is not here!" });
+    } else {
+      await user
+        .comparePasswords(req.body.password)
+        .then((result) => {
+          if (!result) {
+            res.json({ message: "Password in incorrect! Please try again." });
+          } else {
+            const id = user._id;
+            const role = user.role;
+            const username = user.username;
+            const myToken = jwt.sign(
+              { id, role, username },
+              process.env.JWT_ACCESS_SECRET
+            );
+            res.json({ myToken });
+          }
+        })
+        .catch((err) => console.log({ err }));
+    }
   })();
 };
 

@@ -44,6 +44,11 @@ router
   .route("/acceptedDeliveryguys")
   .get(authorizationRole("admin"), DeliveryGuys.getAccepted);
 
+// Get pending delivery guy
+router
+  .route("/pendingDeliveryguys")
+  .get(authorizationRole("admin"), DeliveryGuys.getPending);
+
 // Get refused delivery guy
 router
   .route("/refusedDeliveryguys")

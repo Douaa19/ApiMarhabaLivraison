@@ -9,9 +9,10 @@ const getClients = (req, res) => {
       .exec()
       .then((result) => {
         if (!result) {
-          res.status(404).json({ message: "No client found!" });
+          res.status(404).json({ message: "No clients found!" });
         } else {
-          res.status(200).json({ result });
+          console.log(result);
+          res.status(200).json(result);
         }
       });
   } catch (error) {
