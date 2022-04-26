@@ -11,7 +11,7 @@ const createAnnounce = async (req, res) => {
             description: req.body.description,
             price: req.body.price,
             category_id: result._id,
-            images: req.file.originalname,
+            images: req.body.images,
           }).then((response) => {
             res.json({ message: "New announce created!" });
           });
@@ -28,27 +28,33 @@ const createAnnounce = async (req, res) => {
 };
 
 const getAnnounces = async (req, res) => {
-  const annons = await Announces.find();
   try {
+    const annons = await Announces.find().populate("category_id", "name");
     if (!annons) {
       res.status(400).json({ message: "No announces found" });
     }
     res.status(200).json(annons);
   } catch (error) {
-    res.json(error)
+    res.json(error);
   }
 };
 
 const getAnnounce = async (req, res) => {
-  await Announces.findById({ _id: req.body.Id }).then((err, result) => {
-    if (!result) res.json(err);
-    res.status(200).json(result);
-  });
+  await Announces.find({ _id: req.params.id })
+    .populate("category_id", "name")
+    .exec()
+    .then((err, result) => {
+      if (!result) {
+        res.json(err);
+      } else {
+        console.log(result);
+      }
+    });
 };
 
 const deleteAnnounce = async (req, res) => {
   try {
-    await Announces.findByIdAndDelete({ _id: req.body.Id });
+    await Announces.findByIdAndDelete({ _id: req.params.id });
     res.status(200).json({ message: "One announce deleted successfully! " });
   } catch (error) {
     res.status(404).json(error.message);
@@ -56,26 +62,21 @@ const deleteAnnounce = async (req, res) => {
 };
 
 const updateAnnounce = async (req, res) => {
-  const Id = req.body.Id;
+  const Id = req.params.id;
   const data = {
-    title: req.body.title,
-    description: req.body.description,
-    price: req.body.price,
-    category: req.body.category,
-    cotegory_id: "",
+    title: req.body.data.title,
+    description: req.body.data.description,
+    price: req.body.data.price,
+    cotegory_id: req.body.data.category_id._id,
   };
 
   try {
     const category = await Category.findOne({ name: data.category });
-    if (!category) {
-      res.json({ message: "Category not found!" });
-    } else {
-      data.cotegory_id = category._id;
+    
       Announces.findByIdAndUpdate(Id, data, (err, response) => {
         if (err) res.status(400).json(err);
         res.status(200).json({ message: "Announce updated seccussefully!" });
       });
-    }
   } catch (error) {
     res.json(error.message);
   }

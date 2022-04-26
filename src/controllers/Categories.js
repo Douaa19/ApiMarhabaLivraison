@@ -26,11 +26,10 @@ const createCategory = async (req, res) => {
 
 // Delete category
 const deleteCategory = async (req, res) => {
-  console.log(req.body.name);
   try {
-    const newCategory = await Category.findByIdAndDelete({ name: req.body.name });
-    if (newCategory)
-      res.status(200).json({ message: "Category created successfully !" });
+    const category = await Category.findByIdAndDelete(req.body.id);
+    if (category)
+      res.status(200).json({ message: "Category deleted successfully !" });
   } catch (error) {
     res.json({ error });
   }
@@ -39,5 +38,5 @@ const deleteCategory = async (req, res) => {
 module.exports = {
   getCategories,
   createCategory,
-  deleteCategory
+  deleteCategory,
 };

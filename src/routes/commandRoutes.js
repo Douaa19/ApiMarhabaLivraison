@@ -13,7 +13,7 @@ router.route("/commands").get(Commands.getClientCommands);
 
 // Get all commands
 router
-  .route("/command")
+  .route("/command/:id")
   .get(Commands.getClientCommand)
   .put(Commands.updateCommand)
   .delete(authorizationRole("admin", "client"), Commands.deleteCommand)

@@ -20,7 +20,7 @@ const Commands = new mongoose.Schema({
     required: true,
     ref: "User",
   },
-  delivelyGuy_id: {
+  deliveryGuy_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: false,

@@ -11,7 +11,6 @@ const getClients = (req, res) => {
         if (!result) {
           res.status(404).json({ message: "No clients found!" });
         } else {
-          console.log(result);
           res.status(200).json(result);
         }
       });
@@ -23,7 +22,7 @@ const getClients = (req, res) => {
 // Get one client
 const getClient = async (req, res) => {
   try {
-    const client = await User.findById({ _id: req.body.Id });
+    const client = await User.findById({ _id: req.params.id });
     if (!client) {
       res.status(404).json({ message: "Client not found!" });
     } else {
@@ -39,7 +38,7 @@ const getClient = async (req, res) => {
 // Delete one client
 const deleteClient = (req, res) => {
   try {
-    User.findByIdAndDelete({ _id: req.body.Id }).then((response) => {
+    User.findByIdAndDelete({ _id: req.params.id }).then((response) => {
       res.json({ message: "Client delete seccussfully!" });
     });
   } catch (error) {

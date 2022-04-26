@@ -15,7 +15,7 @@ router
 
 // Delete category
 router
-  .route("/Id")
+  .route("/")
   .delete(authorizationRole("admin"), Categories.deleteCategory);
 
 module.exports = router;

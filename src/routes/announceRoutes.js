@@ -12,7 +12,7 @@ router.route("/announces").get(Announces.getAnnounces);
 
 // Get, delete and update announce
 router
-  .route("/announce")
+  .route("/announce/:id")
   .get(Announces.getAnnounce)
   .delete(authorizationRole("admin"), Announces.deleteAnnounce)
   .put(authorizationRole("admin"), Announces.updateAnnounce);

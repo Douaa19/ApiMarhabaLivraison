@@ -5,17 +5,16 @@ const { Command, CommandProduct, User, Announces } = require("../models");
 // Create command
 const createCommand = async (req, res) => {
   try {
-    Command.create({
+    await Command.create({
       address: req.body.address,
       totale: 0,
       client_id: req.body.client_id,
       status: "new",
     }).then((response) => {
       if (!response) {
+        console.log("Command not created");
         res.json({ message: "Command not created" });
       } else {
-        res.json({ message: "Command created!" });
-
         // Create arrays
         let product_id = [];
         let quantity = [];
@@ -24,8 +23,8 @@ const createCommand = async (req, res) => {
         req.body.products.forEach((product) => {
           product_id.push(product.product_id);
           quantity.push(product.quantity);
-          price.push(product.price);
-          totale.push(product.price * product.quantity);
+          price.push(product.price_product);
+          totale.push(product.price_product * product.quantity);
         });
 
         CommandProduct.create(
@@ -47,6 +46,8 @@ const createCommand = async (req, res) => {
                 { totale: Totale },
                 (err, response) => {
                   console.log("totale updated!");
+                  console.log("Command created!");
+                  res.json({ message: "Command created!" });
                   // if (err) {
                   //   res.json(err);
                   // } else {
@@ -67,7 +68,10 @@ const createCommand = async (req, res) => {
 // Get all commands by client id
 const getCommands = async (req, res) => {
   try {
-    const commands = await Command.find();
+    const commands = await Command.find().populate(
+      "client_id",
+      "username email"
+    );
     if (!commands) res.status(404).json({ message: "Commands not found!" });
     res.status(200).json(commands);
   } catch (error) {
@@ -105,7 +109,7 @@ const getClientCommand = async (req, res) => {
 // Get one command by command_id
 const getCommand = async (req, res) => {
   try {
-    const command = await Command.findById(req.body.command_id);
+    const command = await Command.findById(req.params.id);
     if (command) {
       res.status(200).json(command);
     } else {
@@ -118,19 +122,25 @@ const getCommand = async (req, res) => {
 
 // Delete one command
 const deleteCommand = async (req, res) => {
-  Command.findById(req.body.Id, (err, result) => {
-    if (result) {
-      if (result.status === "new") {
-        Command.findByIdAndDelete(req.body.Id).then((response) =>
-          res.status(200).json({ message: "Command deleted successfully!" })
-        );
-      } else {
-        res.json({ message: "Sorry! You can't delete this command" });
+  try {
+    console.log(req.params.id);
+    Command.findOne({ _id: req.params.Id }, (err, result) => {
+      if (result) {
+        // if (result.status === "new") {
+        //   Command.findByIdAndDelete(req.params.Id).then((response) =>
+        //     res.status(200).json({ message: "Command deleted successfully!" })
+        //   );
+        // }
+        // else {
+        //   res.json({ message: "Sorry! You can't delete this command" });
+        // }
+        //   } else {
+        //     res.status(404).json({ message: "Command not found!" });
       }
-    } else {
-      res.status(404).json({ message: "Command not found!" });
-    }
-  });
+    });
+  } catch (error) {
+    if (error) console.log(error);
+  }
 };
 
 // Update one command
@@ -143,18 +153,19 @@ const updateStatus = async (req, res) => {
   try {
     const command = await Command.find({ _id: req.body.command_id });
     if (command && command[0].status === "new") {
+      console.log(command[0]);
       command[0].status = "prepared";
       Command.findByIdAndUpdate(
         req.body.command_id,
         {
-          address: command[0].address,
           status: command[0].status,
-          total: command[0].total,
-          client_id: command[0].client_id,
-          $set: { delivelyGuy_id: req.body.delivelyGuy_id },
+          $set: {
+            deliveryGuy_id: req.body.deliveryGuy_id,
+          },
         },
         (err, response) => {
           if (err) res.json(err);
+          Command.findById(req.body.command_id, (err, result) => {});
           res.status(200).json({
             message: "This order is your next move!",
             status: "Order in production",
@@ -162,8 +173,8 @@ const updateStatus = async (req, res) => {
         }
       );
     } else if (command && command[0].status === "prepared") {
-      if (command[0].delivelyGuy_id == req.body.delivelyGuy_id) {
-        // command[0].status = "delivered";
+      if (command[0].deliveryGuy_id == req.body.deliveryGuy_id) {
+        command[0].status = "delivered";
         Command.findByIdAndUpdate(
           req.body.command_id,
           { status: "delivered" },
@@ -179,8 +190,7 @@ const updateStatus = async (req, res) => {
         });
       }
     } else if (command && command[0].status === "delivered") {
-      if (command[0].delivelyGuy_id == req.body.delivelyGuy_id) {
-        // command[0].status = "delivered";
+      if (command[0].deliveryGuy_id == req.body.deliveryGuy_id) {
         Command.findByIdAndUpdate(
           req.body.command_id,
           { status: "lunched" },
@@ -194,6 +204,7 @@ const updateStatus = async (req, res) => {
                   if (!client)
                     res.status(404).json({ message: "Client not found!" });
                   const clientName = client.username;
+                  console.log(compro[0]);
                   Announces.find(
                     { _id: compro[0].product_id },
                     (err, products) => {
@@ -232,32 +243,33 @@ const updateStatus = async (req, res) => {
                       });
 
                       const mailOptions = {
-                        from: '"Douaa Larif" <douaa.larif@outlook.fr>',
+                        from: '"Marhaba 💌" <douaa.larif@outlook.fr>',
                         to: "doua.larif@gmail.com",
                         subject: "Facture",
                         html: `<table>
-                            <thead>
+                          <thead>
+                            <tr>
+                              <th>Nom de client</th>
+                              <th>Adresse</th>
+                              <th>Nom repas</th>
+                              <th>Quantité</th>
+                              <th>Prix</th>
+                              <th>Totale</th>
+                            </tr>
+                          </thead>
+                          <tbody>
                               <tr>
-                                <th>Nom de client</th>
-                                <th>Adresse</th>
-                                <th>Nom repas</th>
-                                <th>Quantité</th>
-                                <th>Prix</th>
-                                <th>Totale</th>
+                                <td>${billInfos.clientName}</td>
+                                <td>${billInfos.address}</td>
+                                <td>${billInfos.product_title}</td>
+                                <td>${billInfos.quantity}</td>
+                                <td>${billInfos.product_price}</td>
+                                <td>${billInfos.Total_price}</td>
                               </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                  <td>${billInfos.clientName}</td>
-                                  <td>${billInfos.address}</td>
-                                  <td>${billInfos.product_title}</td>
-                                  <td>${billInfos.quantity}</td>
-                                  <td>${billInfos.product_price}</td>
-                                  <td>${billInfos.Total_price}</td>
-                                </tr>
-                            </tbody>
-                          </table>`,
+                          </tbody>
+                        </table>`,
                       };
+                      console.log(transporter, mailOptions)
 
                       transporter.sendMail(mailOptions, (error, info) => {
                         if (error) {

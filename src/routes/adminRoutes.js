@@ -54,4 +54,9 @@ router
   .route("/refusedDeliveryguys")
   .get(authorizationRole("admin"), DeliveryGuys.getRefused);
 
+// Delete delivery guy
+router
+  .route("/deleteDeliveryguy/:id")
+  .delete(authorizationRole("admin", DeliveryGuys.deleteDeliveryguy));
+
 module.exports = router;

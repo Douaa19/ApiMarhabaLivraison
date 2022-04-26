@@ -55,8 +55,21 @@ const getRefused = async (req, res) => {
   }
 };
 
+// Delete one delivery guy
+const deleteDeliveryguy = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findByIdAndDelete(req.body.userId);
+    if (user)
+      res.status(200).json({ message: "Delivery guy deleted successfully !" });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 module.exports = {
   getAccepted,
   getPending,
   getRefused,
+  deleteDeliveryguy
 };

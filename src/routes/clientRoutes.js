@@ -10,7 +10,7 @@ router.route("/status").get(Commands.statusCommand);
 
 // Get and delete one client
 router
-  .route("/client")
+  .route("/client/:id")
   .get(authorizationRole("admin"), Clients.getClient)
   .delete(authorizationRole("admin"), Clients.deleteClient);
 
