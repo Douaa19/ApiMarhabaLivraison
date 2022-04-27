@@ -82,7 +82,7 @@ const getCommands = async (req, res) => {
 // Get all commands
 const getClientCommands = async (req, res) => {
   try {
-    const myCom = await Command.find({ client_id: req.body.Id });
+    const myCom = await Command.find({ client_id: req.params.Id });
     if (!myCom) res.status(404).json({ message: "Commands not found!" });
     res.status(200).json(myCom);
   } catch (error) {
@@ -95,7 +95,7 @@ const getClientCommand = async (req, res) => {
   try {
     const command = await Command.find({
       $and: [{ _id: req.body.command_id }, { client_id: req.body.client_id }],
-    });
+    }).populate("client_id", "username");
     if (command) {
       res.status(200).json(command);
     } else {

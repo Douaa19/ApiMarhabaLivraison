@@ -9,11 +9,11 @@ const { authorizationRole } = require("../middlewares/autorization");
 router.route("/create").post(Commands.createCommand);
 
 // Get all commands
-router.route("/commands").get(Commands.getClientCommands);
+router.route("/commands/:Id").get(Commands.getClientCommands);
 
 // Get all commands
 router
-  .route("/command/:id")
+  .route("/command/:Id")
   .get(Commands.getClientCommand)
   .put(Commands.updateCommand)
   .delete(authorizationRole("admin", "client"), Commands.deleteCommand)
