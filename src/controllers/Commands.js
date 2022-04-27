@@ -151,12 +151,12 @@ const updateCommand = (req, res) => {
 // Update command status
 const updateStatus = async (req, res) => {
   try {
-    const command = await Command.find({ _id: req.body.command_id });
+    const command = await Command.find({ _id: req.params.command_id });
     if (command && command[0].status === "new") {
       console.log(command[0]);
       command[0].status = "prepared";
       Command.findByIdAndUpdate(
-        req.body.command_id,
+        req.params.command_id,
         {
           status: command[0].status,
           $set: {
@@ -165,7 +165,7 @@ const updateStatus = async (req, res) => {
         },
         (err, response) => {
           if (err) res.json(err);
-          Command.findById(req.body.command_id, (err, result) => {});
+          Command.findById(req.params.command_id, (err, result) => {});
           res.status(200).json({
             message: "This order is your next move!",
             status: "Order in production",
@@ -176,7 +176,7 @@ const updateStatus = async (req, res) => {
       if (command[0].deliveryGuy_id == req.body.deliveryGuy_id) {
         command[0].status = "delivered";
         Command.findByIdAndUpdate(
-          req.body.command_id,
+          req.params.command_id,
           { status: "delivered" },
           (err, response) => {
             if (err) res.json(err);
@@ -192,13 +192,13 @@ const updateStatus = async (req, res) => {
     } else if (command && command[0].status === "delivered") {
       if (command[0].deliveryGuy_id == req.body.deliveryGuy_id) {
         Command.findByIdAndUpdate(
-          req.body.command_id,
+          req.params.command_id,
           { status: "lunched" },
           (err, response) => {
             if (err) res.json(err);
             // Create bill
             CommandProduct.find(
-              { command_id: req.body.command_id },
+              { command_id: req.params.command_id },
               (err, compro) => {
                 User.findById(command[0].client_id, (err, client) => {
                   if (!client)
@@ -243,7 +243,7 @@ const updateStatus = async (req, res) => {
                       });
 
                       const mailOptions = {
-                        from: '"Marhaba 💌" <douaa.larif@outlook.fr>',
+                        from: '"Marhaba App" <douaa.larif@outlook.fr>',
                         to: "doua.larif@gmail.com",
                         subject: "Facture",
                         html: `<table>
@@ -269,7 +269,6 @@ const updateStatus = async (req, res) => {
                           </tbody>
                         </table>`,
                       };
-                      console.log(transporter, mailOptions)
 
                       transporter.sendMail(mailOptions, (error, info) => {
                         if (error) {
@@ -300,7 +299,10 @@ const updateStatus = async (req, res) => {
 // Get all commands with new status
 const getNewCommands = async (req, res) => {
   try {
-    const newCom = await Command.find({ status: "new" });
+    const newCom = await Command.find({ status: "new" }).populate(
+      "client_id",
+      "username email"
+    );
     if (!newCom) res.status(404).json({ message: "No new commands found" });
     res.status(200).json(newCom);
   } catch (error) {
@@ -322,6 +324,31 @@ const statusCommand = async (req, res) => {
   }
 };
 
+// Gell all oredrs for one delivery guy
+const getMyOrders = async (req, res) => {
+  const command = await Command.find({
+    deliveryGuy_id: req.params.id,
+  }).populate("client_id", "username email");
+  if (!command) res.status(404).json({ message: "No orders found!" });
+  res.status(200).json(command);
+};
+
+//
+const getWorkingCommands = async (req, res) => {
+  try {
+    const command = await Command.find({
+      deliveryGuy_id: req.params.id,
+      $or: [{ status: "prepared" }, { status: "delivered" }],
+    })
+      .populate("client_id", "username")
+      .then((result) => {
+        res.status(200).json(result);
+      });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 module.exports = {
   createCommand,
   getCommands,
@@ -333,4 +360,6 @@ module.exports = {
   updateStatus,
   getNewCommands,
   statusCommand,
+  getMyOrders,
+  getWorkingCommands,
 };

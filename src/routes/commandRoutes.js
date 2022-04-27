@@ -20,7 +20,7 @@ router
   .get(Commands.getCommand)
 
 router
-.route("/updateStatus")
+.route("/updateStatus/:command_id")
   .put(authorizationRole("deliveryguy"), Commands.updateStatus);
 
 module.exports = router;
