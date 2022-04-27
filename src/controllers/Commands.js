@@ -200,6 +200,7 @@ const updateStatus = async (req, res) => {
             CommandProduct.find(
               { command_id: req.params.command_id },
               (err, compro) => {
+                console.log(req.params.command_id);
                 User.findById(command[0].client_id, (err, client) => {
                   if (!client)
                     res.status(404).json({ message: "Client not found!" });
@@ -328,6 +329,7 @@ const statusCommand = async (req, res) => {
 const getMyOrders = async (req, res) => {
   const command = await Command.find({
     deliveryGuy_id: req.params.id,
+    status: "lunched",
   }).populate("client_id", "username email");
   if (!command) res.status(404).json({ message: "No orders found!" });
   res.status(200).json(command);
