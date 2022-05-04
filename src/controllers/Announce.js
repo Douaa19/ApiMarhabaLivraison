@@ -11,7 +11,7 @@ const createAnnounce = async (req, res) => {
             description: req.body.description,
             price: req.body.price,
             category_id: result._id,
-            images: req.body.images,
+            images: req.file.originalname,
           }).then((response) => {
             res.json({ message: "New announce created!" });
           });
@@ -72,11 +72,11 @@ const updateAnnounce = async (req, res) => {
 
   try {
     const category = await Category.findOne({ name: data.category });
-    
-      Announces.findByIdAndUpdate(Id, data, (err, response) => {
-        if (err) res.status(400).json(err);
-        res.status(200).json({ message: "Announce updated seccussefully!" });
-      });
+
+    Announces.findByIdAndUpdate(Id, data, (err, response) => {
+      if (err) res.status(400).json(err);
+      res.status(200).json({ message: "Announce updated seccussefully!" });
+    });
   } catch (error) {
     res.json(error.message);
   }

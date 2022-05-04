@@ -153,7 +153,7 @@ const updateStatus = async (req, res) => {
   try {
     const command = await Command.find({ _id: req.params.command_id });
     if (command && command[0].status === "new") {
-      console.log(command[0]);
+      // console.log(command[0]);
       command[0].status = "prepared";
       Command.findByIdAndUpdate(
         req.params.command_id,
@@ -200,7 +200,7 @@ const updateStatus = async (req, res) => {
             CommandProduct.find(
               { command_id: req.params.command_id },
               (err, compro) => {
-                console.log(req.params.command_id);
+                // console.log(req.params.command_id);
                 User.findById(command[0].client_id, (err, client) => {
                   if (!client)
                     res.status(404).json({ message: "Client not found!" });
@@ -344,6 +344,7 @@ const getWorkingCommands = async (req, res) => {
     })
       .populate("client_id", "username")
       .then((result) => {
+        console.log(result);
         res.status(200).json(result);
       });
   } catch (error) {
