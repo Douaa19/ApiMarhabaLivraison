@@ -55,8 +55,9 @@ const handleLogin = (req, res) => {
             const id = user._id;
             const role = user.role;
             const username = user.username;
+            const email = user.email;
             const myToken = jwt.sign(
-              { id, role, username },
+              { id, role, username, email },
               process.env.JWT_ACCESS_SECRET
             );
             res.json({ myToken });

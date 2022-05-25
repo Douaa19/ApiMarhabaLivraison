@@ -90,6 +90,33 @@ const getClientCommands = async (req, res) => {
   }
 };
 
+// Get all commands grouping by status
+const getClientCommandsGrouping = async (req, res) => {
+  try {
+    let newOrders = [];
+    let preparedOrders = [];
+    let lunchedOrders = [];
+    let deliveredOrders = [];
+    const myCom = await Command.find({ client_id: req.params.Id });
+    if (!myCom) res.status(404).json({ message: "Commands not found!" });
+    myCom.forEach((element) => {
+      if (element.status === "new") {
+        newOrders.push(element);
+      } else if (element.status === "prepared") {
+        preparedOrders.push(element);
+      } else if (element.status === "lunched") {
+        lunchedOrders.push(element);
+      } else if (element.status === "delivered") {
+        deliveredOrders.push(element);
+      }
+    });
+    let data = { newOrders, preparedOrders, lunchedOrders, deliveredOrders };
+    res.status(200).json(data);
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // Get one command by client_id and command_id
 const getClientCommand = async (req, res) => {
   try {
@@ -97,6 +124,7 @@ const getClientCommand = async (req, res) => {
       $and: [{ _id: req.body.command_id }, { client_id: req.body.client_id }],
     }).populate("client_id", "username");
     if (command) {
+      // console.log(command);
       res.status(200).json(command);
     } else {
       res.status(404).json({ message: "Command not found!" });
@@ -355,6 +383,7 @@ const getWorkingCommands = async (req, res) => {
 module.exports = {
   createCommand,
   getCommands,
+  getClientCommandsGrouping,
   getClientCommands,
   getClientCommand,
   getCommand,

@@ -16,6 +16,7 @@ const authorization = (req, res, next) => {
           id: user.id,
           role: user.role.name,
           username: user.username,
+          email: user.email,
         };
         next();
       }

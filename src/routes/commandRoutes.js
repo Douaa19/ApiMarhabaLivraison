@@ -17,10 +17,12 @@ router
   .get(Commands.getClientCommand)
   .put(Commands.updateCommand)
   .delete(authorizationRole("admin", "client"), Commands.deleteCommand)
-  .get(Commands.getCommand)
+  .get(Commands.getCommand);
+
+router.route("/commandGroup/:Id").get(Commands.getClientCommandsGrouping);
 
 router
-.route("/updateStatus/:command_id")
+  .route("/updateStatus/:command_id")
   .put(authorizationRole("deliveryguy"), Commands.updateStatus);
 
 module.exports = router;
