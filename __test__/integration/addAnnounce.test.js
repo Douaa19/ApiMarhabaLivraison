@@ -1,0 +1,12 @@
+const { Announces } = require("../../src/controllers");
+const expect = require("chai").expect;
+
+describe("Get one announce", () => {
+  it("Should return status 200", () => {
+    expect(
+      new Promise((res, rej) => {
+        res(Announces.createAnnounce()).to.equal("200");
+      })
+    );
+  });
+});

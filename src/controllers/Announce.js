@@ -13,7 +13,7 @@ const createAnnounce = async (req, res) => {
             category_id: result._id,
             images: req.file.originalname,
           }).then((response) => {
-            res.json({ message: "New announce created!" });
+            res.status(200).json({ message: "New announce created!" });
           });
         } else {
           res

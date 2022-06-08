@@ -7,7 +7,7 @@ describe("Get all clients", () => {
     request(app)
       .get("/admin/clients")
       .then((response) => {
-        // expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(200);
         done();
       });
   });
@@ -15,7 +15,7 @@ describe("Get all clients", () => {
     request(app)
       .get("/command/commands")
       .then((response) => {
-        // expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(200);
         done();
       });
   });
@@ -23,7 +23,7 @@ describe("Get all clients", () => {
     request(app)
       .get("/announce/announces")
       .then((response) => {
-        // expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(200);
         done();
       });
   });

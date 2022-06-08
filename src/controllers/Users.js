@@ -12,7 +12,7 @@ const handleRegister = (req, res) => {
     req.body.repeated_password,
   ];
 
-  // Check if the password and th repeated password ere the same
+  // Check if the password and the repeated password are the same
   if (user[3] !== user[4]) {
     res.json({ error: "The passwords are not the same!" });
   }
